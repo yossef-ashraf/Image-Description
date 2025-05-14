@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Image AI - Image Description Generator</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Advanced Image AI</h1>
+            <p>Upload an image to generate detailed descriptions and analysis</p>
+        </header>
+        
+        <main>
+            <div class="upload-container">
+                <div id="drop-area">
+                    <form class="upload-form">
+                        <input type="file" id="fileElem" accept="image/*" onchange="handleFiles(this.files)">
+                        <label class="button" for="fileElem">Select an image</label>
+                        <p>or drag & drop your image here</p>
+                    </form>
+                    <div id="preview-container" class="hidden">
+                        <img id="preview" src="#" alt="Preview">
+                        <button id="change-image">Change Image</button>
+                    </div>
+                </div>
+                
+                <button id="analyze-btn" class="hidden">Generate Description</button>
+                
+                <div id="result-container" class="hidden">
+                    <h2>Image Analysis Results:</h2>
+                    <div id="loading" class="hidden">
+                        <div class="spinner"></div>
+                        <p>Analyzing image...</p>
+                    </div>
+                    
+                    <div id="description-container">
+                        <div class="result-section">
+                            <h3>Basic Caption:</h3>
+                            <p id="basic-caption"></p>
+                        </div>
+                        
+                        <div class="result-section">
+                            <h3>Detailed Description:</h3>
+                            <p id="detailed-description"></p>
+                        </div>
+                        
+                        <div class="result-section">
+                            <h3>Image Properties:</h3>
+                            <ul id="image-properties"></ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+        
+        <footer>
+            <p>Advanced Image AI - Local Image Analysis System</p>
+        </footer>
+    </div>
+    
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
