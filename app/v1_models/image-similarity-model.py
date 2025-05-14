@@ -9,38 +9,38 @@ import os
 
 class ImageSimilarityFinder:
     def __init__(self, db_config):
-        # إعداد نموذج ResNet50 للاستخراج الخصائص
+        # Set up ResNet50 model for feature extraction
         self.model = ResNet50(weights='imagenet', include_top=False, pooling='avg')
         
-        # الاتصال بقاعدة البيانات
+        # Connect to the database
         self.db = mysql.connector.connect(**db_config)
         self.cursor = self.db.cursor()
 
     def extract_features(self, img_path):
-        # تحميل وتجهيز الصورة
+        # Load and prepare the image
         img = image.load_img(img_path, target_size=(224, 224))
         x = image.img_to_array(img)
         x = np.expand_dims(x, axis=0)
         x = preprocess_input(x)
         
-        # استخراج الخصائص
+        # Extract features
         features = self.model.predict(x)
         return features.flatten()
 
     def find_similar_images(self, query_image_path, threshold=0.85):
-        # استخراج خصائص صورة الاستعلام
+        # Extract features of the query image
         query_features = self.extract_features(query_image_path)
         
-        # البحث في قاعدة البيانات
+        # Search in the database
         similar_images = []
         self.cursor.execute("SELECT id, path FROM images")
         
         for image_id, db_image_path in self.cursor:
             if os.path.exists(db_image_path):
-                # استخراج خصائص الصورة من قاعدة البيانات
+                # Extract features of the database image
                 db_features = self.extract_features(db_image_path)
                 
-                # حساب التشابه
+                # Calculate similarity
                 similarity = cosine_similarity(
                     query_features.reshape(1, -1),
                     db_features.reshape(1, -1)
@@ -53,7 +53,7 @@ class ImageSimilarityFinder:
                         'similarity': similarity
                     })
         
-        # ترتيب النتائج حسب درجة التشابه
+        # Sort results by similarity score
         similar_images.sort(key=lambda x: x['similarity'], reverse=True)
         return similar_images
 
@@ -61,7 +61,7 @@ class ImageSimilarityFinder:
         self.cursor.close()
         self.db.close()
 
-# مثال على الاستخدام
+# Example usage
 db_config = {
     'host': 'localhost',
     'user': 'your_username',
